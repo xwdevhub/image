@@ -24,7 +24,10 @@ class BmpEncoder extends Encoder {
     out.writeUint32(headerSize);
     out.writeUint32(headerInfoSize);
     out.writeUint32(image.width);
-    out.writeUint32(-image.height);
+    //print("height");
+    //print(image.height);
+    // change bmp 编码
+    out.writeUint32(image.height);
     out.writeUint16(1); // planes
     out.writeUint16(bpp);
     out.writeUint32(0); // compress
@@ -33,15 +36,16 @@ class BmpEncoder extends Encoder {
     out.writeUint32(0); // vr
     out.writeUint32(0); // colors
     out.writeUint32(0); // importantColors
-
-    for (var y = 0, pi = 0; y < image.height; ++y) {
-      for (var x = 0; x < image.width; ++x, ++pi) {
+    // print("y--");
+    var pi = 0;
+    for (var y = image.height - 1; y >= 0; y--) {
+      for (var x = 0; x < image.width; ++x) {
+        pi = y * image.width + x;
         var rgba = image[pi];
         out.writeByte(getBlue(rgba));
         out.writeByte(getGreen(rgba));
         out.writeByte(getRed(rgba));
-        if (bytesPerPixel == 4)
-          out.writeByte(getAlpha(rgba));
+        if (bytesPerPixel == 4) out.writeByte(getAlpha(rgba));
       }
 
       // Line padding
